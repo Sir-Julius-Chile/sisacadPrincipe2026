@@ -474,11 +474,14 @@
       '7B':{name:'7° Básico A',level:'basico'},'8B':{name:'8° Básico A',level:'basico'}
     };
     var SUBJECT_NAMES = {
-      lenguaje:'Lenguaje y Comunicación',matematica:'Matemática',
-      historia:'Historia, Geografía y Ciencias Sociales',ciencias:'Ciencias Naturales',ingles:'Inglés',
-      artes:'Artes Visuales',musica:'Música',tecnologia:'Educación Tecnológica',
-      edu_fisica:'Educación Física',orientacion:'Orientación'
+      lenguaje:'Lenguaje',matematica:'Matemáticas',
+      comprension_natural:'Comprensión del Medio Natural',comprension_social:'Comprensión del Medio Social',
+      ingles:'Inglés',taller_ingles:'Taller de Inglés',
+      edu_fisica:'Educación Física y Polideportes',artes:'Artes',
+      musica:'Música',tecnologia:'Tecnología',
+      formacion_valorica:'Formación Valórica',orientacion:'Orientación'
     };
+    var SIN_INCIDENCIA = ['formacion_valorica','orientacion'];
 
     var MODULES = [
       {key:'notas',label:'Notas / Calificaciones'},{key:'asistencia',label:'Asistencia'},
@@ -668,7 +671,10 @@
 
     function getSubjects(cid) {
       var c=COURSES_SUBJECTS[cid];if(!c)return[];
-      return['lenguaje','matematica','historia','ciencias','ingles','artes','musica','tecnologia','edu_fisica','orientacion'];
+      var comunes=['lenguaje','matematica','comprension_natural','comprension_social','edu_fisica','artes','musica','tecnologia','formacion_valorica','orientacion'];
+      var n=parseInt(cid);
+      if(n>=1&&n<=4) return comunes.concat(['taller_ingles']);
+      return comunes.concat(['ingles']);
     }
     function getSubjectGroups(cid){return(appData._subjectGroups||{})[cid]||[];}
     function getSubjectGroupFor(cid,subKey){var gs=getSubjectGroups(cid);for(var i=0;i<gs.length;i++){if(gs[i].subs.indexOf(subKey)>=0)return gs[i];}return null;}
@@ -960,6 +966,7 @@
         students.forEach(function(s){
           cStu++;var b4=0,sSum=0,sCnt=0,seenGroup={};
           subs.forEach(function(sub){
+            if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
             if(grouped[sub]){
               var g=grouped[sub];
               if(seenGroup[g.name])return;
@@ -1005,6 +1012,7 @@
             h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;">'+s.name+'</td>';
             var seenG2={};
             subs.forEach(function(sub){
+              if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
               if(grouped[sub]){
                 var g=grouped[sub];
                 if(seenG2[g.name])return;
@@ -1049,6 +1057,7 @@
         groups.forEach(function(g){g.subs.forEach(function(sk){grouped[sk]=g;});});
         var seenG={};
         subs.forEach(function(sub){
+          if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
           if(grouped[sub]){
             var g=grouped[sub];
             if(seenG[g.name])return;
@@ -1219,6 +1228,7 @@
       var grouped={};groups.forEach(function(g){g.subs.forEach(function(s){grouped[s]=g;});});
       var rows='',tAvg=0,cnt=0,b4=[],seenGroup={};
       allSubs.forEach(function(sub){
+        if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
         if(grouped[sub]){
           var g=grouped[sub];
           if(seenGroup[g.name])return;
@@ -1793,6 +1803,7 @@
           groups.forEach(function(g){g.subs.forEach(function(sk){grouped[sk]=g;});});
           var seenG={};
           getSubjects(id).forEach(function(sub){
+            if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
             if(grouped[sub]){
               var g=grouped[sub];
               if(seenG[g.name])return;
@@ -1829,6 +1840,7 @@
             groups.forEach(function(g){g.subs.forEach(function(sk){grouped[sk]=g;});});
             var seenG2={};
             getSubjects(cid).forEach(function(sub){
+              if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
               if(grouped[sub]){
                 var g=grouped[sub];
                 if(seenG2[g.name])return;
@@ -1870,6 +1882,7 @@
           groups.forEach(function(g){g.subs.forEach(function(sk){grouped[sk]=g;});});
           var seenG={};
           getSubjects(id).forEach(function(sub){
+            if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
             if(grouped[sub]){
               var g=grouped[sub];
               if(seenG[g.name])return;
@@ -1896,6 +1909,7 @@
           groups.forEach(function(g){g.subs.forEach(function(sk){grouped[sk]=g;});});
           var seenG2={};
           getSubjects(id).forEach(function(sub){
+            if(SIN_INCIDENCIA.indexOf(sub)>=0)return;
             if(grouped[sub]){
               var g=grouped[sub];
               if(seenG2[g.name])return;
